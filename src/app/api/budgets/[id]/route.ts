@@ -3,7 +3,7 @@ import Budget from "../../../../model/Budget";
 import { NextResponse, NextRequest } from "next/server";
 
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, context: { params: Record<string, string> }) {
   await connectToDatabase();
   const body = await req.json();
 
@@ -16,7 +16,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
 
   try {
-    const updatedBudget = await Budget.findByIdAndUpdate(params.id, body, {
+    const updatedBudget = await Budget.findByIdAndUpdate(context.params.id, body, {
       new: true,
     });
 
@@ -34,11 +34,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_req: NextRequest, context: { params: Record<string, string> }) {
   await connectToDatabase();
 
   try {
-    const deletedBudget = await Budget.findByIdAndDelete(params.id);
+    const deletedBudget = await Budget.findByIdAndDelete(context.params.id);
 
     if (!deletedBudget) {
       return NextResponse.json(
