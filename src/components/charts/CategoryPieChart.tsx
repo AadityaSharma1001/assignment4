@@ -17,7 +17,7 @@ import {
 } from "date-fns";
 import { PieChart as PieChartIcon, DollarSign } from "lucide-react";
 
-// Enhanced colors for categories with better contrast
+// Category color palette
 const CATEGORY_COLORS: Record<string, string> = {
   food: "#f97316",
   transport: "#10b981",
@@ -28,14 +28,18 @@ const CATEGORY_COLORS: Record<string, string> = {
   other: "#9ca3af",
 };
 
+interface ChartData {
+  name: string;
+  value: number;
+  category: string;
+}
+
 interface CustomTooltipProps {
   active: boolean;
   payload?: Array<{
     name: string;
     value: number;
-    payload: {
-      [key: string]: any; // or make it fully typed if you know the structure
-    };
+    payload: ChartData;
   }>;
 }
 
@@ -46,17 +50,19 @@ export default function CategoryPieChart() {
   const start = startOfMonth(now);
   const end = endOfMonth(now);
 
+  // Filter current month's transactions
   const filtered = transactions.filter((txn) =>
     isWithinInterval(parseISO(txn.date), { start, end })
   );
 
+  // Aggregate by category
   const categoryTotals: Record<string, number> = {};
   filtered.forEach((txn) => {
-    categoryTotals[txn.category] =
-      (categoryTotals[txn.category] || 0) + txn.amount;
+    categoryTotals[txn.category] = (categoryTotals[txn.category] || 0) + txn.amount;
   });
 
-  const data = Object.entries(categoryTotals).map(([category, amount]) => ({
+  // Prepare data for PieChart
+  const data: ChartData[] = Object.entries(categoryTotals).map(([category, amount]) => ({
     name: category.charAt(0).toUpperCase() + category.slice(1),
     value: amount,
     category,
@@ -64,16 +70,17 @@ export default function CategoryPieChart() {
 
   const totalAmount = data.reduce((sum, item) => sum + item.value, 0);
 
+  // Custom Tooltip
   const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       const percentage = ((data.value / totalAmount) * 100).toFixed(1);
-      
+
       return (
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 shadow-lg">
           <p className="text-white font-medium mb-2">{data.name}</p>
-          <div className="space-y-1">
-            <p className="text-gray-300">Amount: ₹{data.value}</p>
+          <div className="space-y-1 text-sm">
+            <p className="text-gray-300">Amount: ₹{data.value.toFixed(2)}</p>
             <p className="text-gray-300">Percentage: {percentage}%</p>
           </div>
         </div>
@@ -82,9 +89,24 @@ export default function CategoryPieChart() {
     return null;
   };
 
-  const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: { cx: number; cy: number; midAngle: number; innerRadius: number; outerRadius: number; percent: number }) => {
-    if (percent < 0.05) return null; // Don't show labels for slices less than 5%
-    
+  // Custom Label inside slices
+  const CustomLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    percent,
+  }: {
+    cx: number;
+    cy: number;
+    midAngle: number;
+    innerRadius: number;
+    outerRadius: number;
+    percent: number;
+  }) => {
+    if (percent < 0.05) return null;
+
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -95,10 +117,10 @@ export default function CategoryPieChart() {
         x={x}
         y={y}
         fill="white"
-        textAnchor={x > cx ? 'start' : 'end'}
+        textAnchor={x > cx ? "start" : "end"}
         dominantBaseline="central"
-        fontSize="12"
-        fontWeight="500"
+        fontSize={12}
+        fontWeight={500}
       >
         {`${(percent * 100).toFixed(0)}%`}
       </text>
@@ -119,7 +141,7 @@ export default function CategoryPieChart() {
         </div>
         <div className="flex items-center gap-2 text-sm">
           <DollarSign className="w-4 h-4 text-green-400" />
-          <span className="text-gray-300">Total: ₹{totalAmount}</span>
+          <span className="text-gray-300">Total: ₹{totalAmount.toFixed(2)}</span>
         </div>
       </div>
 
@@ -147,10 +169,7 @@ export default function CategoryPieChart() {
               ))}
             </Pie>
             <Tooltip content={(props) => <CustomTooltip {...props} />} />
-            <Legend 
-              wrapperStyle={{ color: '#9ca3af' }}
-              iconType="rect"
-            />
+            <Legend wrapperStyle={{ color: "#9ca3af" }} iconType="rect" />
           </PieChart>
         </ResponsiveContainer>
       </div>

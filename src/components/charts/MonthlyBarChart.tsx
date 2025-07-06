@@ -1,20 +1,60 @@
 'use client';
 
 import { useTransactions } from "../../lib/hooks/useTransaction";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { eachDayOfInterval, format, isSameDay, parseISO, startOfMonth, endOfMonth } from "date-fns";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  eachDayOfInterval,
+  format,
+  isSameDay,
+  parseISO,
+  startOfMonth,
+  endOfMonth,
+} from "date-fns";
 import { Calendar, TrendingUp, Activity } from "lucide-react";
 
+// Tooltip data shape
+interface TooltipData {
+  date: string;
+  fullDate: string;
+  amount: number;
+}
+
+// Tooltip props
 interface CustomTooltipProps {
-  active: boolean;
+  active?: boolean;
   payload?: Array<{
     name: string;
     value: number;
-    payload: {
-      [key: string]: any; // or make it fully typed if you know the structure
-    };
+    payload: TooltipData;
   }>;
+  avgDaily: number;
 }
+
+// Custom Tooltip Component
+const CustomTooltip = ({ active, payload, avgDaily }: CustomTooltipProps) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 shadow-lg">
+        <p className="text-white font-medium mb-2">{data.fullDate}</p>
+        <div className="space-y-1">
+          <p className="text-blue-400">Amount: ₹{data.amount}</p>
+          {data.amount > avgDaily && (
+            <p className="text-yellow-400 text-xs">Above average</p>
+          )}
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function MonthlyBarChart() {
   const { transactions } = useTransactions();
@@ -27,7 +67,7 @@ export default function MonthlyBarChart() {
   const days = eachDayOfInterval({ start, end });
 
   // Prepare daily expense totals
-  const data = days.map((day) => {
+  const data: TooltipData[] = days.map((day) => {
     const total = transactions
       .filter((txn) => isSameDay(parseISO(txn.date), day))
       .reduce((sum, txn) => sum + txn.amount, 0);
@@ -41,28 +81,9 @@ export default function MonthlyBarChart() {
 
   // Calculate summary stats
   const totalSpent = data.reduce((sum, item) => sum + item.amount, 0);
-  const avgDaily = totalSpent / data.length;
-  const maxDay = data.reduce((max, item) => item.amount > max.amount ? item : max, data[0]);
+  const daysPassed = eachDayOfInterval({ start, end: now }).length;
+  const avgDaily = totalSpent / daysPassed;
   const activeDays = data.filter(item => item.amount > 0).length;
-
-  const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      
-      return (
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 shadow-lg">
-          <p className="text-white font-medium mb-2">{data.fullDate}</p>
-          <div className="space-y-1">
-            <p className="text-blue-400">Amount: ₹{data.amount}</p>
-            {data.amount > avgDaily && (
-              <p className="text-yellow-400 text-xs">Above average</p>
-            )}
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl p-6">
@@ -117,7 +138,7 @@ export default function MonthlyBarChart() {
               axisLine={{ stroke: '#374151' }}
               tickLine={{ stroke: '#374151' }}
             />
-            <Tooltip content={(props) => <CustomTooltip {...props} />} />
+            <Tooltip content={(props) => <CustomTooltip {...props} avgDaily={avgDaily} />} />
             <Bar 
               dataKey="amount" 
               fill="#4f46e5" 
