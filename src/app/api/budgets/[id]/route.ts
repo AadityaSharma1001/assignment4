@@ -1,14 +1,15 @@
 import { connectToDatabase } from "../../../../lib/db";
 import Budget from "../../../../model/Budget";
 import { NextResponse, NextRequest } from "next/server";
+import { type NextApiRequest } from "next";
 
-interface Params {
+type RouteParams = {
   params: {
     id: string;
   };
-}
+};
 
-export async function PUT(req: NextRequest, { params }: Params) {
+export async function PUT(req: NextRequest, { params }: RouteParams) {
   await connectToDatabase();
   const body = await req.json();
 
@@ -38,7 +39,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: Params) {
+export async function DELETE(_req: NextRequest, { params }: RouteParams) {
   await connectToDatabase();
 
   try {
