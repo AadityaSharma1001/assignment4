@@ -34,7 +34,7 @@ export default function MonthlyBarChart() {
   const maxDay = data.reduce((max, item) => item.amount > max.amount ? item : max, data[0]);
   const activeDays = data.filter(item => item.amount > 0).length;
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: { active: boolean; payload: any[]; label: string }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       

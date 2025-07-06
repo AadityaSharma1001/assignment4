@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   try {
     const transaction = await Transaction.create(body);
     return NextResponse.json(transaction, { status: 201 });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+  } catch (error: unknown) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 400 });
   }
 }

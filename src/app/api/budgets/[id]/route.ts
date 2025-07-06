@@ -32,9 +32,9 @@ export async function PUT(req: NextRequest, { params }: Params) {
     }
 
     return NextResponse.json(updatedBudget);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("PUT /api/budgets/[id] error:", error);
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    return NextResponse.json({ error: (error as Error).message }, { status: 400 });
   }
 }
 
@@ -52,8 +52,8 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
     }
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("DELETE /api/budgets/[id] error:", error);
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    return NextResponse.json({ error: (error as Error).message }, { status: 400 });
   }
 }

@@ -64,10 +64,10 @@ export default function BudgetComparisonChart() {
   const totalSpent = data.reduce((sum, item) => sum + item.Spent, 0);
   const overBudgetCategories = data.filter(item => item.Spent > item.Budgeted).length;
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: { active: boolean; payload: any; label: string }) => {
     if (active && payload && payload.length) {
-      const budgeted = payload.find((p: any) => p.dataKey === 'Budgeted')?.value || 0;
-      const spent = payload.find((p: any) => p.dataKey === 'Spent')?.value || 0;
+      const budgeted = payload.find((p: { dataKey: string; value: number }) => p.dataKey === 'Budgeted')?.value || 0;
+      const spent = payload.find((p: { dataKey: string; value: number }) => p.dataKey === 'Spent')?.value || 0;
       const percentage = budgeted > 0 ? ((spent / budgeted) * 100).toFixed(1) : 0;
       
       return (

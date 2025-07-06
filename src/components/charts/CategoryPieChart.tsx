@@ -53,7 +53,7 @@ export default function CategoryPieChart() {
 
   const totalAmount = data.reduce((sum, item) => sum + item.value, 0);
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active: boolean; payload: any[] }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       const percentage = ((data.value / totalAmount) * 100).toFixed(1);
@@ -71,7 +71,7 @@ export default function CategoryPieChart() {
     return null;
   };
 
-  const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+  const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: { cx: number; cy: number; midAngle: number; innerRadius: number; outerRadius: number; percent: number }) => {
     if (percent < 0.05) return null; // Don't show labels for slices less than 5%
     
     const RADIAN = Math.PI / 180;

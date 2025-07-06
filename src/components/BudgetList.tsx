@@ -3,9 +3,10 @@
 import { useBudgets } from "../lib/hooks/useBudget";
 import { Button } from "@/components/ui/button";
 import { Edit2, Trash2, Target, Calendar, DollarSign, PieChart } from "lucide-react";
+import { Budget } from "@/lib/hooks/useBudget";
 
 interface Props {
-  onEdit: (budget: any) => void;
+  onEdit: (budget: Budget) => void;
 }
 
 export default function BudgetList({ onEdit }: Props) {

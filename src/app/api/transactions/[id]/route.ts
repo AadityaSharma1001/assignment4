@@ -14,8 +14,8 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   try {
     const updated = await Transaction.findByIdAndUpdate(params.id, body, { new: true });
     return NextResponse.json(updated);
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+  } catch (error: unknown) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 400 });
   }
 }
 
@@ -30,7 +30,7 @@ export async function DELETE(req: Request, context: { params: { id: string } }) 
     await Transaction.findByIdAndDelete(id);
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+  } catch (error: unknown) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 400 });
   }
 }
