@@ -5,6 +5,17 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recha
 import { eachDayOfInterval, format, isSameDay, parseISO, startOfMonth, endOfMonth } from "date-fns";
 import { Calendar, TrendingUp, Activity } from "lucide-react";
 
+interface CustomTooltipProps {
+  active: boolean;
+  payload?: Array<{
+    name: string;
+    value: number;
+    payload: {
+      [key: string]: any; // or make it fully typed if you know the structure
+    };
+  }>;
+}
+
 export default function MonthlyBarChart() {
   const { transactions } = useTransactions();
 
@@ -34,7 +45,7 @@ export default function MonthlyBarChart() {
   const maxDay = data.reduce((max, item) => item.amount > max.amount ? item : max, data[0]);
   const activeDays = data.filter(item => item.amount > 0).length;
 
-  const CustomTooltip = ({ active, payload, label }: { active: boolean; payload: any[]; label: string }) => {
+  const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       
@@ -106,7 +117,7 @@ export default function MonthlyBarChart() {
               axisLine={{ stroke: '#374151' }}
               tickLine={{ stroke: '#374151' }}
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={(props) => <CustomTooltip {...props} />} />
             <Bar 
               dataKey="amount" 
               fill="#4f46e5" 

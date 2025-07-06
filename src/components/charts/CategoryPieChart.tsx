@@ -28,6 +28,17 @@ const CATEGORY_COLORS: Record<string, string> = {
   other: "#9ca3af",
 };
 
+interface CustomTooltipProps {
+  active: boolean;
+  payload?: Array<{
+    name: string;
+    value: number;
+    payload: {
+      [key: string]: any; // or make it fully typed if you know the structure
+    };
+  }>;
+}
+
 export default function CategoryPieChart() {
   const { transactions } = useTransactions();
 
@@ -53,7 +64,7 @@ export default function CategoryPieChart() {
 
   const totalAmount = data.reduce((sum, item) => sum + item.value, 0);
 
-  const CustomTooltip = ({ active, payload }: { active: boolean; payload: any[] }) => {
+  const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       const percentage = ((data.value / totalAmount) * 100).toFixed(1);
@@ -135,7 +146,7 @@ export default function CategoryPieChart() {
                 />
               ))}
             </Pie>
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={(props) => <CustomTooltip {...props} />} />
             <Legend 
               wrapperStyle={{ color: '#9ca3af' }}
               iconType="rect"
