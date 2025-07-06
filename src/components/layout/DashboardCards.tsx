@@ -17,7 +17,7 @@ export default function DashboardCards() {
   const totalThisMonth = monthlyTxns.reduce((sum, txn) => sum + txn.amount, 0);
 
   // Calculate top category
-  const categoryTotals = {};
+  const categoryTotals: Record<string, number> = {};
   monthlyTxns.forEach(txn => {
     categoryTotals[txn.category] = (categoryTotals[txn.category] || 0) + txn.amount;
   });
