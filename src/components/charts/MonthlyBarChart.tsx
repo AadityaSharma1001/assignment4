@@ -1,6 +1,6 @@
 'use client';
 
-import { useTransactions } from "@/lib/hooks/useTransaction";
+import { useTransactions } from "../../lib/hooks/useTransaction";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { eachDayOfInterval, format, isSameDay, parseISO, startOfMonth, endOfMonth } from "date-fns";
 import { Calendar, TrendingUp, Activity } from "lucide-react";

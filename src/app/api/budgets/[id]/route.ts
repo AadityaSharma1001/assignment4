@@ -1,5 +1,5 @@
-import { connectToDatabase } from "@/lib/db";
-import Budget from "@/model/Budget";
+import { connectToDatabase } from "../../../../lib/db";
+import Budget from "../../../../model/Budget";
 import { NextResponse, NextRequest } from "next/server";
 
 interface Params {

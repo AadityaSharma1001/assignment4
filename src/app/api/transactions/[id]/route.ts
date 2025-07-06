@@ -1,5 +1,5 @@
-import { connectToDatabase } from '@/lib/db';
-import Transaction from '@/model/Transaction';
+import { connectToDatabase } from '../../../../lib/db';
+import Transaction from '../../../../model/Transaction';
 import { NextResponse } from 'next/server';
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {

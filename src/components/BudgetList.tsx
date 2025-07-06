@@ -1,6 +1,6 @@
 "use client";
 
-import { useBudgets } from "@/lib/hooks/useBudget";
+import { useBudgets } from "../lib/hooks/useBudget";
 import { Button } from "@/components/ui/button";
 import { Edit2, Trash2, Target, Calendar, DollarSign, PieChart } from "lucide-react";
 

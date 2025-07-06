@@ -1,7 +1,7 @@
 'use client';
 
-import { useTransactions } from "@/lib/hooks/useTransaction";
-import { useBudgets } from "@/lib/hooks/useBudget";
+import { useTransactions } from "../../lib/hooks/useTransaction";
+import { useBudgets } from "../../lib/hooks/useBudget";
 import {
   BarChart,
   Bar,

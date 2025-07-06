@@ -1,6 +1,6 @@
 'use client';
 
-import { useTransactions } from "@/lib/hooks/useTransaction";
+import { useTransactions } from "../../lib/hooks/useTransaction";
 import {
   PieChart,
   Pie,
