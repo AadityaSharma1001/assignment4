@@ -2,7 +2,7 @@ import { connectToDatabase } from '../../../../lib/db';
 import Transaction from '../../../../model/Transaction';
 import { NextResponse } from 'next/server';
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, context: { params: { id: string } }) {
   await connectToDatabase();
   const body = await req.json();
 
@@ -11,12 +11,17 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     body.category = body.category.charAt(0).toUpperCase() + body.category.slice(1).toLowerCase();
   }
 
+  const {
+      params: { id },
+    } = context;
+
   try {
-    const updated = await Transaction.findByIdAndUpdate(params.id, body, { new: true });
+    const updated = await Transaction.findByIdAndUpdate(id, body, { new: true });
     return NextResponse.json(updated);
   } catch (error: unknown) {
     return NextResponse.json({ error: (error as Error).message }, { status: 400 });
   }
+
 }
 
 export async function DELETE(req: Request, context: { params: { id: string } }) {

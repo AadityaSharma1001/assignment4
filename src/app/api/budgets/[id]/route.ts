@@ -2,13 +2,8 @@ import { connectToDatabase } from "../../../../lib/db";
 import Budget from "../../../../model/Budget";
 import { NextResponse, NextRequest } from "next/server";
 
-type RouteParams = {
-  params: {
-    id: string;
-  };
-};
 
-export async function PUT(req: NextRequest, { params }: RouteParams) {
+export async function PUT(req: NextRequest, context: { params: { id: string } }) {
   await connectToDatabase();
   const body = await req.json();
 
@@ -19,8 +14,12 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
       body.category.slice(1).toLowerCase();
   }
 
+  const {
+      params: { id },
+    } = context;
+
   try {
-    const updatedBudget = await Budget.findByIdAndUpdate(params.id, body, {
+    const updatedBudget = await Budget.findByIdAndUpdate(id, body, {
       new: true,
     });
 
@@ -38,11 +37,15 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function DELETE(_req: NextRequest, { params }: RouteParams) {
+export async function DELETE(_req: NextRequest, context: { params: { id: string } }) {
   await connectToDatabase();
 
+  const {
+      params: { id },
+    } = context;
+
   try {
-    const deletedBudget = await Budget.findByIdAndDelete(params.id);
+    const deletedBudget = await Budget.findByIdAndDelete(id);
 
     if (!deletedBudget) {
       return NextResponse.json(
