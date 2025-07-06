@@ -61,34 +61,34 @@ export default function BudgetComparisonChart() {
   ).length;
 
   const CustomTooltip = ({
-    active,
-    payload,
-    label,
-  }: {
-    active: boolean;
-    payload: { dataKey: string; value: number }[];
-    label: string;
-  }) => {
-    if (active && payload && payload.length) {
-      const budgeted =
-        payload.find((p) => p.dataKey === "Budgeted")?.value || 0;
-      const spent = payload.find((p) => p.dataKey === "Spent")?.value || 0;
-      const percentage =
-        budgeted > 0 ? ((spent / budgeted) * 100).toFixed(1) : 0;
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: { dataKey: string; value: number }[];
+  label?: string | number;
+}) => {
+  if (active && payload && payload.length) {
+    const budgeted = payload.find((p) => p.dataKey === "Budgeted")?.value || 0;
+    const spent = payload.find((p) => p.dataKey === "Spent")?.value || 0;
+    const percentage =
+      budgeted > 0 ? ((spent / budgeted) * 100).toFixed(1) : "0";
 
-      return (
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 shadow-lg">
-          <p className="text-white font-medium mb-2">{label}</p>
-          <div className="space-y-1">
-            <p className="text-green-400">Budgeted: ₹{budgeted}</p>
-            <p className="text-red-400">Spent: ₹{spent}</p>
-            <p className="text-gray-300">Usage: {percentage}%</p>
-          </div>
+    return (
+      <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 shadow-lg">
+        <p className="text-white font-medium mb-2">{String(label)}</p>
+        <div className="space-y-1">
+          <p className="text-green-400">Budgeted: ₹{budgeted}</p>
+          <p className="text-red-400">Spent: ₹{spent}</p>
+          <p className="text-gray-300">Usage: {percentage}%</p>
         </div>
-      );
-    }
-    return null;
-  };
+      </div>
+    );
+  }
+  return null;
+};
+
 
   return (
     <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl p-6">

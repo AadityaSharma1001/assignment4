@@ -91,41 +91,53 @@ export default function CategoryPieChart() {
 
   // Custom Label inside slices
   const CustomLabel = ({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    percent,
-  }: {
-    cx: number;
-    cy: number;
-    midAngle: number;
-    innerRadius: number;
-    outerRadius: number;
-    percent: number;
-  }) => {
-    if (percent < 0.05) return null;
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent,
+}: {
+  cx?: number;
+  cy?: number;
+  midAngle?: number;
+  innerRadius?: number;
+  outerRadius?: number;
+  percent?: number;
+}) => {
+  if (
+    cx == null ||
+    cy == null ||
+    midAngle == null ||
+    innerRadius == null ||
+    outerRadius == null ||
+    percent == null ||
+    percent < 0.05
+  ) {
+    return null;
+  }
 
-    const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  const RADIAN = Math.PI / 180;
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-    return (
-      <text
-        x={x}
-        y={y}
-        fill="white"
-        textAnchor={x > cx ? "start" : "end"}
-        dominantBaseline="central"
-        fontSize={12}
-        fontWeight={500}
-      >
-        {`${(percent * 100).toFixed(0)}%`}
-      </text>
-    );
-  };
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="white"
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="central"
+      fontSize={12}
+      fontWeight={500}
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+
+
 
   return (
     <div className="bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-xl p-6">
