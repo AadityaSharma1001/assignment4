@@ -3,8 +3,9 @@ import Budget from "../../../../model/Budget";
 import { NextResponse, NextRequest } from "next/server";
 
 
-export async function PUT(req: NextRequest, context: { params: Record<string, string> }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
   await connectToDatabase();
+  const { id } = await params;
   const body = await req.json();
 
   // Normalize category casing
@@ -16,7 +17,7 @@ export async function PUT(req: NextRequest, context: { params: Record<string, st
 
 
   try {
-    const updatedBudget = await Budget.findByIdAndUpdate(context.params.id, body, {
+    const updatedBudget = await Budget.findByIdAndUpdate(id, body, {
       new: true,
     });
 
@@ -34,11 +35,12 @@ export async function PUT(req: NextRequest, context: { params: Record<string, st
   }
 }
 
-export async function DELETE(_req: NextRequest, context: { params: Record<string, string> }) {
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
   await connectToDatabase();
+  const { id } = await params;
 
   try {
-    const deletedBudget = await Budget.findByIdAndDelete(context.params.id);
+    const deletedBudget = await Budget.findByIdAndDelete(id);
 
     if (!deletedBudget) {
       return NextResponse.json(
