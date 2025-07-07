@@ -16,6 +16,12 @@ export async function POST(req: NextRequest) {
     const normalizedCategory =
       body.category.charAt(0).toUpperCase() + body.category.slice(1).toLowerCase();
 
+    const limit = Number(body.limit);
+
+    if (isNaN(limit)) {
+      return NextResponse.json({ error: "Invalid limit" }, { status: 400 });
+    }
+
     const existingBudget = await Budget.findOne({
       month: body.month,
       category: normalizedCategory,
@@ -24,15 +30,17 @@ export async function POST(req: NextRequest) {
     let result;
 
     if (existingBudget) {
-      existingBudget.limit += body.amount;
+      existingBudget.limit += limit;
       result = await existingBudget.save();
     } else {
       result = await Budget.create({
         category: normalizedCategory,
         month: body.month,
-        limit: body.amount,
+        limit: limit,
       });
     }
+
+    console.log("Budget created/updated successfully:", result);
 
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
